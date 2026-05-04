@@ -32,7 +32,7 @@ Help agents and users make concise, conventional commit messages and maintain a 
   - `fix(api): handle null response [update]`
   - `refactor(db): remove legacy index [delete]`
 - Types: `feat`, `fix`, `refactor`, `chore`, `docs`, `style`, `test`, `perf`, `ci`
-- Verbs `add` → `new`, `update/fix` → `update`, `remove/delete` → `delete`
+- Verbs `add` → `feat`, `fix` → `update`, `remove/delete` → `delete`
 
 ## CHANGELOG.md format
 
@@ -49,16 +49,16 @@ Each commit appends a block like this:
 **Action:** new | update | delete
 
 ### Changes
-- NEW: path/to/new-file.ts — brief description of what was added
-- UPDATE: path/to/changed-file.tsx — brief description of what changed
-- DELETE: path/to/removed-file.ts — brief description of what was removed
+- feat: path/to/new-file.ts — brief description of what was added
+- fix: path/to/changed-file.tsx — brief description of what changed
+- delete: path/to/removed-file.ts — brief description of what was removed
 ```
 
 Rules for the Changes list:
 
-- Use `NEW:` for files that did not exist before this commit.
-- Use `UPDATE:` for files that existed and were modified.
-- Use `DELETE:` for files that were removed.
+- Use `feat:` for files that did not exist before this commit.
+- Use `fix:` for files that existed and were modified.
+- Use `delete:` for files that were removed.
 - Add a short plain-English note after the `—` dash explaining what the file does or why it changed.
 
 ## Project File Structure section
@@ -140,11 +140,11 @@ The agent then writes the full entry using the values above (no raw shell script
 
 ### Changes
 
-- NEW: src/app/hospital/page.tsx — Hospital home page with intro text and AppointmentForm
-- NEW: src/app/hospital/about/page.tsx — About page for the hospital section
-- NEW: src/app/hospital/contact/page.tsx — Contact page for the hospital section
-- NEW: src/components/ui/AppointmentForm.tsx — Form component for booking appointments (name, email, department, date)
-- UPDATE: src/app/page.tsx — Added Hospital Booking link; changed docs button style to btn-ghost
+- feat: src/app/hospital/page.tsx — Hospital home page with intro text and AppointmentForm
+- feat: src/app/hospital/about/page.tsx — About page for the hospital section
+- feat: src/app/hospital/contact/page.tsx — Contact page for the hospital section
+- feat: src/components/ui/AppointmentForm.tsx — Form component for booking appointments (name, email, department, date)
+- fix: src/app/page.tsx — Added Hospital Booking link; changed docs button style to btn-ghost
 ```
 
 ## Trigger phrases
