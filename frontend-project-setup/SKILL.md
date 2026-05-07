@@ -11,35 +11,35 @@ description: >
   multi-env setup (local/stage/prod), or any combination of frontend stack choices. Also
   trigger when the user asks to add a specific tool such as adding Zustand to a project or
   setting up ESLint for React. When the user says "bypass" or "default", skip questions and
-  scaffold a full Next.js 14 App Router project with the default stack immediately.
+  scaffold a full Next.js 15 App Router project with the default stack immediately.
   Generates complete file trees, config files, scripts, and boilerplate code tailored to the
-  user's chosen stack.
+  user's chosen stack and version.
 ---
 
 # Frontend Project Setup Skill
 
-Scaffold complete, production-ready frontend projects with modern tooling, Git hooks, testing, API services, and multi-environment configs. Always generate **real files** — not just instructions.
+Scaffold complete, production-ready frontend projects. Always generate **real files** with **version-correct configs** — not just instructions.
 
 ---
 
 ## ⚡ BYPASS / DEFAULT MODE
 
-If the user says **"bypass"**, **"default"**, **"skip"**, or **"just set it up"** — skip all questions and immediately scaffold with:
+If user says **"bypass"**, **"default"**, **"skip"**, or **"just set it up"** — skip all questions and scaffold immediately with:
 
 | Option | Default |
 |---|---|
-| Framework | **Next.js 14 App Router** |
-| Styling | **Tailwind CSS + SCSS** |
-| State | **Zustand + TanStack Query** |
+| Framework | **Next.js 15 App Router** |
+| Styling | **Tailwind CSS v4 + SCSS** |
+| State | **Zustand + TanStack Query v5** |
 | UI Library | **Ant Design v5** |
 | Tables | **TanStack Table v8** |
 | Icons | **React Icons + Ant Design Icons** |
-| Language | **TypeScript (strict)** |
+| Language | **TypeScript 5 (strict)** |
 | Linting | **ESLint v9 flat config + Prettier** |
-| Testing | **Playwright (E2E) + Vitest (unit)** |
-| Git Hooks | **Husky + lint-staged (pre-commit) + pre-push test run** |
-| API Layer | **Axios service files + TanStack Query hooks** |
-| Environments | **local / stage / production `.env` files + npm scripts** |
+| Testing | **Playwright + Vitest** |
+| Git Hooks | **Husky + lint-staged** |
+| API Layer | **Axios + TanStack Query hooks** |
+| Environments | **local / stage / production `.env` files** |
 
 Jump directly to **Step 3** with these defaults.
 
@@ -47,28 +47,24 @@ Jump directly to **Step 3** with these defaults.
 
 ## Step 1: Gather Stack Choices
 
-Use `ask_user_input_v0` to gather choices. Keep to 3 questions max per round. Cover:
+Use `ask_user_input_v0`. Max 3 questions per round.
 
-### Q1 — Framework & Styling
-- **Framework**: Next.js 14 (App Router) ★ | Next.js 14 (Pages Router) | React + Vite | Remix
-- **Styling**: Tailwind CSS ★ | SCSS | Tailwind + SCSS ★ | CSS Modules | Styled Components
+### Q1 — Framework & Version
+- **Framework**: Next.js 15 ★ | Next.js 14 | React + Vite
+- **Router** (Next.js only): App Router ★ | Pages Router
 
-### Q2 — State, Data Fetching & UI
-- **State Management**: Zustand ★ | Redux Toolkit | Jotai | Recoil | Context API only | None
-- **Data Fetching**: TanStack Query (React Query) ★ | SWR | RTK Query | Fetch/Axios only | None
-- **UI Library**: Ant Design v5 ★ | shadcn/ui | MUI | Chakra UI | Radix UI | None
+### Q2 — Styling & UI
+- **Styling**: Tailwind v4 ★ | Tailwind v3 | SCSS | Tailwind + SCSS ★ | CSS Modules
+- **UI Library**: Ant Design v5 ★ | shadcn/ui | MUI v6 | Chakra UI v3 | None
 
-### Q3 — Quality & Testing
-- **Tables**: TanStack Table v8 ★ | Ant Design Table | AG Grid (Community) | React Data Grid | None
-- **Icons**: React Icons ★ | Lucide React | Heroicons | Phosphor Icons | Tabler Icons | Ant Design Icons
-- **Testing**: Playwright + Vitest ★ | Playwright only | Vitest + Testing Library | Cypress + Vitest | Jest + Testing Library | None
-- **Git Hooks**: Husky (pre-commit + pre-push) ★ | Lefthook | Simple-git-hooks | None
+### Q3 — State, Testing & Tooling
+- **State**: Zustand ★ | Redux Toolkit | Context only | None
+- **Data Fetching**: TanStack Query v5 ★ | SWR | RTK Query | None
+- **Testing**: Playwright + Vitest ★ | Playwright only | Vitest only | None
+- **Git Hooks**: Husky ★ | Lefthook | None
 
 ### Q4 — AI Rules File
-- **AI rules file name**: `CLAUDE.md` ★ | `AGENTS.md`
-  - This file is placed at the project root and contains persistent AI coding rules for the project.
-  - `CLAUDE.md` — used by Claude / Anthropic tooling
-  - `AGENTS.md` — used by OpenAI Codex / other agents
+- `CLAUDE.md` ★ (Claude / Anthropic tooling) | `AGENTS.md` (OpenAI Codex)
 
 ★ = recommended default
 
@@ -76,12 +72,12 @@ Use `ask_user_input_v0` to gather choices. Keep to 3 questions max per round. Co
 
 ## Step 2: Select Reference Files
 
-Read **all** relevant reference files before generating anything:
+Read **all relevant** reference files before generating:
 
-| Topic | Reference File |
+| Topic | File |
 |---|---|
-| React + Vite setup | `references/vite-react.md` |
 | Next.js App Router | `references/nextjs-app.md` |
+| React + Vite | `references/vite-react.md` |
 | Tailwind CSS | `references/tailwind.md` |
 | SCSS | `references/scss.md` |
 | Zustand | `references/zustand.md` |
@@ -90,79 +86,287 @@ Read **all** relevant reference files before generating anything:
 | Ant Design v5 | `references/antd.md` |
 | TanStack Table | `references/tanstack-table.md` |
 | ESLint + Prettier | `references/eslint-prettier.md` |
-| Git Hooks (Husky) | `references/git-hooks.md` |
+| Git Hooks | `references/git-hooks.md` |
 | Testing | `references/testing.md` |
 | API Service Layer | `references/api-services.md` |
 | Environments | `references/environments.md` |
 
 ---
 
-## Step 3: Generate Project Output
+## Step 3: VERSION-AWARE CONFIG GENERATION
 
-Produce a **complete, runnable** project scaffold. Generate files in order below.
+> ⚠️ This is the core of the skill. Config file format, syntax, and filenames differ by version.
+> Always emit the correct variant based on the user's chosen versions.
 
 ---
 
-### 3A — `package.json`
+### 3A — Framework Init Command
 
-Include ALL chosen deps. Scripts section must include:
+#### Next.js 15 (App Router)
+```bash
+npx create-next-app@latest my-app \
+  --typescript --tailwind --eslint \
+  --app --src-dir --import-alias "@/*" \
+  --turbopack
+```
 
-```json
-{
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "build:stage": "dotenv -e .env.stage -- next build",
-    "build:prod": "dotenv -e .env.production -- next build",
-    "start:local": "dotenv -e .env.local -- next dev",
-    "start:stage": "dotenv -e .env.stage -- next start",
-    "start:prod": "dotenv -e .env.production -- next start",
-    "lint": "next lint",
-    "lint:fix": "eslint --fix .",
-    "format": "prettier --write .",
-    "type-check": "tsc --noEmit",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage",
-    "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui",
-    "test:e2e:report": "playwright show-report",
-    "prepare": "husky"
-  }
+#### Next.js 14 (App Router)
+```bash
+npx create-next-app@latest my-app \
+  --typescript --tailwind --eslint \
+  --app --src-dir --import-alias "@/*"
+```
+
+#### Next.js 14/15 (Pages Router)
+Same flags but omit `--app`, add `--no-app`.
+
+#### Vite + React
+```bash
+npm create vite@latest my-app -- --template react-ts
+```
+
+---
+
+### 3B — Next.js Config (VERSION-SENSITIVE)
+
+> 🚨 **MANDATORY VERSION CHECK — do this before writing any next.config file:**
+>
+> 1. If `package.json` is available, read the `next` version from it.
+> 2. If scaffolding fresh, use the version the user stated in Q1.
+> 3. Apply the rule below — **wrong file extension = instant runtime crash.**
+>
+> | Next.js version | Config filename | Format |
+> |---|---|---|
+> | **15.x and above** | `next.config.ts` | TypeScript — `import type { NextConfig }` |
+> | **14.x and below** | `next.config.mjs` | ESM JS — `/** @type */` JSDoc only |
+>
+> ❌ `next.config.ts` on Next.js 14 throws: *"Configuring Next.js via 'next.config.ts' is not supported"*
+> ❌ `next.config.js` (CJS) on either version is legacy — never emit it for new projects
+
+#### Next.js 15 → `next.config.ts`
+```ts
+import type { NextConfig } from 'next'
+
+const nextConfig: NextConfig = {
+  reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: '**.example.com' },
+    ],
+  },
+}
+
+export default nextConfig
+```
+
+#### Next.js 14 → `next.config.mjs`
+```js
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      { protocol: 'https', hostname: '**.example.com' },
+    ],
+  },
+}
+
+export default nextConfig
+```
+
+---
+
+### 3C — Tailwind Config (VERSION-SENSITIVE)
+
+#### Tailwind v4 → CSS-only config (NO `tailwind.config.ts`)
+
+```css
+/* src/app/globals.css  (Next.js)  OR  src/styles/global.css  (Vite) */
+@import "tailwindcss";
+
+@theme {
+  --color-brand-50:  #eff6ff;
+  --color-brand-500: #3b82f6;
+  --color-brand-900: #1e3a8a;
+  --font-sans: 'Inter', sans-serif;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
 }
 ```
 
-For Vite projects, replace `next dev/build/start` with `vite`, `vite build`, `vite preview`.
+Install:
+```bash
+npm install -D tailwindcss@next @tailwindcss/vite   # Vite
+npm install -D tailwindcss@next                      # Next.js (built-in support)
+```
+
+> **No `tailwind.config.ts` file for v4.** Do NOT generate one.
+
+#### Tailwind v3 → `tailwind.config.ts` (TypeScript file required)
+
+```ts
+import type { Config } from 'tailwindcss'
+
+const config: Config = {
+  content: [
+    './src/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    './src/components/**/*.{js,ts,jsx,tsx,mdx}',
+  ],
+  theme: {
+    extend: {
+      colors: {
+        brand: { 50: '#eff6ff', 500: '#3b82f6', 900: '#1e3a8a' },
+      },
+      fontFamily: { sans: ['Inter', 'sans-serif'] },
+    },
+  },
+  plugins: [],
+  // When combining with Ant Design:
+  // corePlugins: { preflight: false },
+}
+
+export default config
+```
+
+CSS import (v3):
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+Install (v3):
+```bash
+npm install -D tailwindcss@3 postcss autoprefixer
+npx tailwindcss init -p
+```
 
 ---
 
-### 3B — Environment Files
+### 3D — Vite Config (VERSION-SENSITIVE)
 
-Generate **4 files** — see `references/environments.md` for full content.
+#### Vite 5 + Tailwind v4
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+import path from 'path'
 
-```
-.env.local          # local dev — never committed
-.env.stage          # staging — committed (no secrets)
-.env.production     # production — committed (no secrets, use CI for secrets)
-.env.example        # template showing all keys — always committed
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+  resolve: { alias: { '@': path.resolve(__dirname, './src') } },
+})
 ```
 
-Standard env vars to include:
+#### Vite 5 + Tailwind v3
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite'
+import react from '@vitejs/plugin-react'
+import path from 'path'
+
+export default defineConfig({
+  plugins: [react()],
+  resolve: { alias: { '@': path.resolve(__dirname, './src') } },
+})
+// postcss.config.js handles Tailwind v3 separately
 ```
-NEXT_PUBLIC_API_URL=
-NEXT_PUBLIC_APP_ENV=local|stage|production
-NEXT_PUBLIC_APP_NAME=
-API_SECRET_KEY=           # server-only (no NEXT_PUBLIC_ prefix)
-NEXT_PUBLIC_SENTRY_DSN=
+
+#### postcss.config.js (Tailwind v3 only — omit for v4)
+```js
+export default {
+  plugins: { tailwindcss: {}, autoprefixer: {} },
+}
 ```
 
 ---
 
-### 3C — TypeScript Config
+### 3E — ESLint Config (VERSION-SENSITIVE)
 
-Always strict:
+#### ESLint v9 → `eslint.config.mjs` (flat config — default for new projects)
+
+```js
+import js from '@eslint/js'
+import tsPlugin from '@typescript-eslint/eslint-plugin'
+import tsParser from '@typescript-eslint/parser'
+import reactPlugin from 'eslint-plugin-react'
+import reactHooks from 'eslint-plugin-react-hooks'
+import jsxA11y from 'eslint-plugin-jsx-a11y'
+import importPlugin from 'eslint-plugin-import'
+import prettierConfig from 'eslint-config-prettier'
+
+export default [
+  js.configs.recommended,
+  {
+    files: ['**/*.{ts,tsx}'],
+    languageOptions: {
+      parser: tsParser,
+      parserOptions: { project: './tsconfig.json', ecmaFeatures: { jsx: true } },
+    },
+    plugins: {
+      '@typescript-eslint': tsPlugin,
+      react: reactPlugin,
+      'react-hooks': reactHooks,
+      'jsx-a11y': jsxA11y,
+      import: importPlugin,
+    },
+    rules: {
+      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/consistent-type-imports': 'error',
+      'react/react-in-jsx-scope': 'off',
+      'react/prop-types': 'off',
+      'react/self-closing-comp': 'error',
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+      'import/order': ['error', {
+        groups: ['builtin', 'external', 'internal', 'parent', 'sibling', 'index'],
+        'newlines-between': 'always',
+        alphabetize: { order: 'asc' },
+      }],
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+      'prefer-const': 'error',
+      'no-var': 'error',
+    },
+    settings: { react: { version: 'detect' } },
+  },
+  prettierConfig, // always last
+]
+```
+
+#### ESLint v8 → `.eslintrc.cjs` (legacy — only if user targets Node < 18 or existing project)
+
+```js
+module.exports = {
+  root: true,
+  env: { browser: true, es2020: true },
+  extends: [
+    'eslint:recommended',
+    'plugin:@typescript-eslint/recommended',
+    'plugin:react/recommended',
+    'plugin:react-hooks/recommended',
+    'plugin:jsx-a11y/recommended',
+    'prettier',
+  ],
+  parser: '@typescript-eslint/parser',
+  rules: {
+    'react/react-in-jsx-scope': 'off',
+    '@typescript-eslint/no-explicit-any': 'warn',
+  },
+}
+```
+
+> **Default to ESLint v9 flat config** for all new projects. Only use v8 if explicitly requested.
+
+---
+
+### 3F — TypeScript Config
+
+Always strict. Use `moduleResolution: "bundler"` for Next.js 14+/Vite 4+:
 
 ```json
 {
@@ -178,279 +382,248 @@ Always strict:
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "forceConsistentCasingInFileNames": true,
-    "incremental": true
+    "incremental": true,
+    "skipLibCheck": true
+  },
+  "include": ["src", "next.config.ts"],
+  "exclude": ["node_modules"]
+}
+```
+
+---
+
+### 3G — package.json
+
+Include ALL chosen deps with correct versions. Always pin major versions in descriptions.
+
+#### Scripts
+```json
+{
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "build:stage": "dotenv -e .env.stage -- next build",
+    "build:prod": "dotenv -e .env.production -- next build",
+    "start:local": "dotenv -e .env.local -- next dev --turbopack",
+    "start:stage": "dotenv -e .env.stage -- next start",
+    "start:prod": "dotenv -e .env.production -- next start",
+    "lint": "next lint",
+    "lint:fix": "eslint --fix .",
+    "format": "prettier --write .",
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "prepare": "husky"
   }
 }
 ```
 
+For Vite: replace `next dev/build/start` with `vite`, `vite build`, `vite preview`. Remove `--turbopack`.
+For Next.js 14: remove `--turbopack` from dev script.
+
+#### Key version table (emit correct versions in dependencies block):
+
+| Package | Latest stable | Notes |
+|---|---|---|
+| next | 15.x | Use 14.x if user chose v14 |
+| react / react-dom | 19.x (Next.js 15) / 18.x (Next.js 14) | Must match |
+| typescript | ^5.5.x | |
+| tailwindcss | ^4.x or ^3.x | Match chosen version |
+| @tanstack/react-query | ^5.x | v5 has breaking changes from v4 |
+| @tanstack/react-table | ^8.x | |
+| zustand | ^5.x | v5 released 2024 |
+| antd | ^5.x | |
+| @ant-design/icons | ^5.x | |
+| axios | ^1.7.x | |
+| eslint | ^9.x | Flat config |
+| husky | ^9.x | v9 changed init command |
+| lint-staged | ^15.x | |
+| vitest | ^2.x | |
+| @playwright/test | ^1.47.x | |
+
 ---
 
-### 3D — ESLint + Prettier
+### 3H — Environment Files
 
-Use **ESLint v9 flat config** (`eslint.config.mjs`). See `references/eslint-prettier.md`.
+Generate 4 files — see `references/environments.md`:
 
-Key rules to always include:
-- `@typescript-eslint/no-explicit-any` — warn
-- `react-hooks/exhaustive-deps` — error
-- `import/order` with groups: builtin → external → internal → relative
-- `no-console` — warn (allow warn/error)
-
-`.prettierrc`:
-```json
-{
-  "semi": true,
-  "singleQuote": true,
-  "tabWidth": 2,
-  "trailingComma": "es5",
-  "printWidth": 100,
-  "bracketSpacing": true
-}
+```
+.env.local        ← never committed
+.env.stage        ← committed (no secrets)
+.env.production   ← committed (no secrets)
+.env.example      ← always committed (all keys, no values)
 ```
 
+For Next.js: prefix client-side vars with `NEXT_PUBLIC_`.
+For Vite: prefix client-side vars with `VITE_` and use `import.meta.env` in code.
+
 ---
 
-### 3E — Git Hooks (Husky)
+### 3I — Git Hooks
 
-See `references/git-hooks.md` for full setup. Generate:
+See `references/git-hooks.md`. Husky v9 changed init:
 
-**`.husky/pre-commit`** — runs lint-staged:
+```bash
+# Husky v9 (current) — init command
+npx husky init
+# This creates .husky/pre-commit automatically
+```
+
+`.husky/pre-commit`:
 ```sh
-#!/usr/bin/env sh
 npx lint-staged
 ```
 
-**`.husky/pre-push`** — runs type-check + unit tests:
+`.husky/pre-push`:
 ```sh
-#!/usr/bin/env sh
 echo "Running pre-push checks..."
 npm run type-check && npm run test
 ```
 
-**`lint-staged` config in `package.json`**:
+`package.json` lint-staged config:
 ```json
 {
   "lint-staged": {
     "*.{ts,tsx}": ["eslint --fix", "prettier --write"],
     "*.{js,jsx}": ["eslint --fix", "prettier --write"],
-    "*.{json,md,yml,yaml}": ["prettier --write"]
+    "*.{json,md,yml,yaml,css,scss}": ["prettier --write"]
   }
 }
 ```
 
 ---
 
-### 3F — API Service Layer
+### 3J — Project Structure
 
-See `references/api-services.md`. Generate these files:
-
+#### Next.js 15 App Router
 ```
-src/lib/
-├── api/
-│   ├── client.ts          # Axios instance with interceptors
-│   ├── endpoints.ts       # All API URL constants
-│   └── types.ts           # Shared API response types
-src/services/
-│   ├── userService.ts     # Example: user CRUD operations
-│   └── index.ts           # Re-exports all services
-src/hooks/api/
-│   ├── useUsers.ts        # TanStack Query hooks wrapping userService
-│   └── index.ts
+src/
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── globals.css
+│   └── (dashboard)/
+│       └── dashboard/
+│           ├── layout.tsx
+│           └── page.tsx
+├── components/
+│   └── ui/           ← shared primitives
+├── features/         ← domain-scoped logic
+├── hooks/
+├── lib/
+│   └── api/
+│       ├── client.ts
+│       ├── endpoints.ts
+│       └── types.ts
+├── services/
+├── store/            ← Zustand or Redux
+├── styles/
+└── types/
 ```
 
-`src/lib/api/client.ts` template:
-```typescript
-import axios from 'axios';
-
-const apiClient = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-  timeout: 10000,
-  headers: { 'Content-Type': 'application/json' },
-});
-
-// Request interceptor — attach auth token
-apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
-  return config;
-});
-
-// Response interceptor — global error handling
-apiClient.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      // handle unauthorized
-    }
-    return Promise.reject(error);
-  }
-);
-
-export default apiClient;
+#### Vite + React
+```
+src/
+├── main.tsx
+├── App.tsx
+├── routes/
+├── components/ui/
+├── features/
+├── hooks/
+├── lib/api/
+├── services/
+├── store/
+├── styles/
+└── types/
 ```
 
 ---
 
-### 3G — TanStack Query Setup
+### 3K — Core Boilerplate Files
 
-Generate `src/lib/queryClient.ts` and wrap app root with `QueryClientProvider`.
+#### `src/lib/utils.ts` (always emit this)
+```ts
+import { clsx, type ClassValue } from 'clsx'
+import { twMerge } from 'tailwind-merge'
 
-```typescript
-// src/lib/queryClient.ts
-import { QueryClient } from '@tanstack/react-query';
-
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5,  // 5 minutes
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
 ```
 
-For Next.js App Router, wrap in `src/app/providers.tsx`:
+#### `src/lib/api/client.ts` — see `references/api-services.md`
+
+#### Providers wrapper — Next.js App Router
 ```tsx
-'use client';
-import { QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { queryClient } from '@/lib/queryClient';
+// src/app/providers.tsx
+'use client'
+
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { ConfigProvider, App as AntApp } from 'antd'
+import { StyleProvider } from '@ant-design/cssinjs'
+import { useState } from 'react'
+
+const theme = {
+  token: {
+    colorPrimary: '#3b82f6',
+    borderRadius: 8,
+    fontFamily: 'Inter, sans-serif',
+  },
+}
 
 export function Providers({ children }: { children: React.ReactNode }) {
+  const [queryClient] = useState(
+    () => new QueryClient({
+      defaultOptions: {
+        queries: { staleTime: 60 * 1000, retry: 1, refetchOnWindowFocus: false },
+      },
+    })
+  )
+
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <StyleProvider hashPriority="high">
+        <ConfigProvider theme={theme}>
+          <AntApp>{children}</AntApp>
+        </ConfigProvider>
+      </StyleProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
-  );
+  )
+}
+```
+
+```tsx
+// src/app/layout.tsx
+import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import { Providers } from './providers'
+import './globals.css'
+
+const inter = Inter({ subsets: ['latin'] })
+
+export const metadata: Metadata = { title: 'My App', description: 'Production app' }
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="en">
+      <body className={inter.className}>
+        <Providers>{children}</Providers>
+      </body>
+    </html>
+  )
 }
 ```
 
 ---
 
-### 3H — Testing Setup
+### 3L — .gitignore
 
-See `references/testing.md` for complete configs.
-
-**Vitest** (`vitest.config.ts`):
-```typescript
-import { defineConfig } from 'vitest/config';
-import react from '@vitejs/plugin-react';
-import path from 'path';
-
-export default defineConfig({
-  plugins: [react()],
-  test: {
-    environment: 'jsdom',
-    globals: true,
-    setupFiles: ['./src/test/setup.ts'],
-    coverage: {
-      reporter: ['text', 'json', 'html'],
-      exclude: ['node_modules/', 'src/test/'],
-    },
-  },
-  resolve: { alias: { '@': path.resolve(__dirname, './src') } },
-});
-```
-
-**Playwright** (`playwright.config.ts`):
-```typescript
-import { defineConfig, devices } from '@playwright/test';
-
-export default defineConfig({
-  testDir: './e2e',
-  fullyParallel: true,
-  forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
-  reporter: 'html',
-  use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3000',
-    trace: 'on-first-retry',
-    screenshot: 'only-on-failure',
-  },
-  projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'Mobile Chrome', use: { ...devices['Pixel 5'] } },
-  ],
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-  },
-});
-```
-
-Generate starter test files:
-- `src/test/setup.ts` — testing-library setup
-- `src/components/ui/Button.test.tsx` — sample unit test
-- `e2e/home.spec.ts` — sample Playwright e2e test
-
----
-
-### 3I — Folder Structure
-
-```
-<project-name>/
-├── .husky/
-│   ├── pre-commit
-│   └── pre-push
-├── e2e/
-│   └── home.spec.ts
-├── public/
-├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── layout.tsx
-│   │   ├── page.tsx
-│   │   └── providers.tsx
-│   ├── components/
-│   │   ├── ui/                 # Generic: Button, Modal, Input
-│   │   └── layout/             # Header, Sidebar, Footer
-│   ├── features/               # Feature modules
-│   │   └── example/
-│   │       ├── components/
-│   │       ├── hooks/
-│   │       └── store.ts
-│   ├── hooks/
-│   │   └── api/                # TanStack Query hooks
-│   ├── lib/
-│   │   ├── api/
-│   │   │   ├── client.ts
-│   │   │   ├── endpoints.ts
-│   │   │   └── types.ts
-│   │   └── queryClient.ts
-│   ├── services/               # API service functions
-│   │   ├── userService.ts
-│   │   └── index.ts
-│   ├── store/                  # Zustand or Redux store
-│   ├── styles/
-│   │   ├── _variables.scss
-│   │   ├── _mixins.scss
-│   │   └── globals.scss
-│   ├── test/
-│   │   └── setup.ts
-│   ├── types/                  # Shared TS types
-│   └── constants/
-├── .env.local
-├── .env.stage
-├── .env.production
-├── .env.example
-├── .eslintignore
-├── .gitignore
-├── .prettierrc
-├── CLAUDE.md               # or AGENTS.md — per user choice in Q4
-├── eslint.config.mjs
-├── next.config.ts
-├── package.json
-├── playwright.config.ts
-├── tsconfig.json
-└── vitest.config.ts
-```
-
----
-
-### 3J — `.gitignore`
-
-Always include:
 ```
 node_modules/
 .next/
@@ -462,214 +635,86 @@ out/
 coverage/
 playwright-report/
 test-results/
+.turbo/
 ```
 
 ---
 
-### 3K — AI Rules File (`CLAUDE.md` or `AGENTS.md`)
+### 3M — AI Rules File (`CLAUDE.md` or `AGENTS.md`)
 
-Generate the file chosen in **Q4** at the project root. Content is identical regardless of file name:
+Place at project root. Content is identical regardless of file name:
 
 ```markdown
-# ================================
 # AI PROJECT RULES
-# ================================
 
 ## 1. CORE PRINCIPLES
-- Treat rules as persistent system behavior
 - TypeScript only — never output `.js` or `.jsx`
-- Act as a senior dev: skip obvious explanations
-- Prioritize clarity, minimal tokens, direct execution
+- Senior dev mode: skip obvious explanations
+- Minimal tokens, direct execution
 
-## 2. NAMING CONVENTIONS
-- **Files:** `kebab-case` → `user-profile.tsx`, `auth-service.ts`
-- **Folders:** `kebab-case` → `components/`, `api-services/`
-- **Components:** `PascalCase` → `UserProfile`, `AuthButton`
-- **Functions:** `camelCase` → `getUserById`, `handleSubmit`
-- **Variables:** `camelCase` → `isLoading`, `userData`
-- **Constants:** `SCREAMING_SNAKE_CASE` → `MAX_RETRY_COUNT`
-- **Types/Interfaces:** `PascalCase` → `UserProfile`, `ApiResponse`
-- **Generics:** descriptive → `TData`, `TResponse` (not `T` unless conventional)
-- **Booleans:** prefix `is/has/can/should` → `isActive`, `hasPermission`
-- **Event handlers:** prefix `handle` → `handleClick`, `handleFormSubmit`
-- **Hooks:** prefix `use` → `useAuth`, `useUserData`
+## 2. NAMING
+- Files/Folders: `kebab-case`
+- Components: `PascalCase`
+- Functions/variables: `camelCase`
+- Constants: `SCREAMING_SNAKE_CASE`
+- Types/Interfaces: `PascalCase`
+- Booleans: `is/has/can/should` prefix
+- Event handlers: `handle` prefix
+- Hooks: `use` prefix
 
 ## 3. FILE HANDLING
-- NEVER guess file/folder paths — ask if missing
+- NEVER guess paths — ask if missing
 - Read only the specific file needed
-- Never load full directories
 
-## 4. FILE CREATION
-- All files: `.ts` or `.tsx` only
-- Follow project-structure.md for placement
-- Reuse existing utilities/hooks/components before creating new
-- Mirror naming conventions already in project
-- One component per file
-
-## 5. STRUCTURE MANAGEMENT
-- Do NOT auto-update project-structure.md
-- Suggest update only if: new folder type introduced OR architecture changes
-- Ask before modifying — one suggestion per conversation
-
-## 6. EXECUTION PRIORITY
-1. User instruction
-2. Explicit file path
-3. Existing codebase patterns
-4. project-structure.md
-5. General best practices
-
-## 7. TOKEN OPTIMIZATION
-- No filler phrases, no closing summaries unless asked
-- No repeating user's words back
-- Omit comments unless logic is non-obvious
-- Show only changed block for edits — not full file
-- Small fixes (<5 lines): inline, no explanation
-- Large changes: 2–3 line plan, then code
-
-## 8. CODE QUALITY
-- Early returns to reduce nesting
+## 4. CODE QUALITY
+- Early returns over nested conditionals
 - `const` over `let`, never `var`
 - Destructure props and imports
 - Optional chaining `?.` and nullish coalescing `??`
-- Functions under 30 lines — split if longer
-- Named constants — no magic numbers
+- Functions under 30 lines
+- No magic numbers — named constants
 - No commented-out code
 - `async/await` over `.then()`
-- Error handling at boundary (`try/catch` at top level)
-- Never hardcode secrets or credentials
+- Error handling at boundary
 
-## 9. TYPESCRIPT
-- No `any` — use `unknown` + narrow, or define proper type
-- No `@ts-ignore` unless unavoidable — comment why if used
-- All params and return types explicitly typed
-- `interface` for object shapes, `type` for unions/intersections
-- `as const` for fixed literal objects/arrays
-- `satisfies` to validate without losing literal inference
-- No `as SomeType` assertions — fix the root type
-- Shared types → `types/` or `*.types.ts`
-- Never use `Function` type — define specific signature
-- Use `Readonly<T>`, `NonNullable<T>`, `ReturnType<T>` utility types
+## 5. TYPESCRIPT
+- No `any` — use `unknown` + narrow
+- No `@ts-ignore` unless unavoidable
+- All params and return types typed
+- `interface` for shapes, `type` for unions
+- No `as SomeType` casting — fix root type
 
-## 10. ESLINT RULES
-- All output code must be ESLint-clean — zero warnings, zero errors
-- Follow rule severity: `error` blocks output, `warn` must be resolved
-- **Line rules:**
-  - Max line length: **100 chars** — break longer lines
-  - Max file length: **300 lines** — split if exceeded
-  - No trailing whitespace
-  - Always a newline at end of file
-- **Type rules:**
-  - `@typescript-eslint/no-explicit-any` — enforced, no exceptions
-  - `@typescript-eslint/explicit-function-return-type` — all functions typed
-  - `@typescript-eslint/no-unused-vars` — remove before output
-  - `@typescript-eslint/consistent-type-imports` — use `import type`
-  - `@typescript-eslint/no-non-null-assertion` — no `!` assertions
-- **Logic rules:**
-  - `no-console` — use a logger utility, never raw `console.log`
-  - `eqeqeq` — always `===`, never `==`
-  - `no-shadow` — no variable shadowing outer scope
-  - `prefer-const` — enforced
-  - `no-var` — enforced
-- **React rules (if applicable):**
-  - `react-hooks/rules-of-hooks` — hooks only at top level
-  - `react-hooks/exhaustive-deps` — all deps in dependency arrays
-  - `react/self-closing-comp` — `<Component />` not `<Component></Component>`
+## 6. OUTPUT RULES
+- No filler phrases or closing summaries
+- Show only changed block for edits
+- Small fixes (<5 lines): inline
+- Large changes: 2-line plan, then code
+- All output ESLint-clean + Prettier-formatted
 
-## 11. PRETTIER FORMATTING
-- All output code must be Prettier-formatted before responding
-- **Config (match project `.prettierrc` if present, else use these defaults):**
-```json
-  {
-    "semi": true,
-    "singleQuote": true,
-    "trailingComma": "all",
-    "printWidth": 100,
-    "tabWidth": 2,
-    "useTabs": false,
-    "bracketSpacing": true,
-    "arrowParens": "always",
-    "endOfLine": "lf"
-  }
+## 7. SAFETY CHECK (before every task)
+- File path clear? No → ask
+- Creating a duplicate? Yes → flag it
+- New library needed? Yes → confirm first
+- Output is `.ts/.tsx`? No → fix it
 ```
-- Single quotes for strings — `'value'` not `"value"`
-- Always trailing commas in multiline (params, arrays, objects)
-- Arrow functions always wrap params — `(x) => x` not `x => x`
-- Opening brace on same line — no Allman style
-- Multiline ternaries: condition on its own line
-- Object destructuring: one prop per line if 3+ props
-
-## 12. IMPORTS
-- Check existing utils/hooks before adding a new dependency
-- Stick to project's existing UI library — never mix
-- Group order (enforced by `eslint-plugin-import`):
-  1. External libs
-  2. Internal modules (absolute paths)
-  3. Relative imports
-  4. Type imports (`import type`)
-  5. Styles
-- Blank line between each group
-- Remove unused imports before output
-- `import type { }` for type-only imports
-
-## 13. COMPONENTS
-- Props interface defined above component
-- No logic inside JSX — extract to variables/handlers
-- JSX under 50 lines — extract sub-components if longer
-- No inline styles unless truly one-off
-- Semantic HTML: `button`, `nav`, `main`, `section`
-
-## 14. STATE & DATA
-- Keep state as local as possible — lift only when needed
-- Derive values from state — no redundant state
-- API calls in service files, not components
-- Always handle loading/error/success explicitly
-
-## 15. SAFETY CHECK (before every task)
-- File path clear? → No → ask
-- Creating a duplicate? → Yes → flag it
-- New library needed? → Yes → confirm with user first
-- Output is `.ts`/`.tsx`? → No → fix before responding
-- New pattern introduced? → Yes → suggest structure update
-- Code passes ESLint? → No → fix before responding
-- Code is Prettier-formatted? → No → format before responding
-```
-
-> **Default:** If the user did not answer Q4 (e.g. bypass mode), generate `CLAUDE.md`.
 
 ---
 
 ## Step 4: Deliver Files
 
-1. Use `create_file` to write every file to `/home/claude/<project-name>/`
-2. Run `zip -r <project-name>.zip <project-name>/` via bash
-3. Use `present_files` to share the ZIP and key config files
+1. `create_file` every file to `/home/claude/<project-name>/`
+2. Run `zip -r <project-name>.zip <project-name>/`
+3. `present_files` to share the ZIP
 
-End with a **Getting Started** section:
+End with Getting Started:
 
 ```bash
-# Install dependencies
-npm install   # or: pnpm install | yarn
-
-# Set up Git hooks
-npm run prepare
-
-# Copy environment template
-cp .env.example .env.local
-# (edit .env.local with your values)
-
-# Start local dev
+npm install
+npm run prepare         # initialize Git hooks
+cp .env.example .env.local  # fill in your values
 npm run start:local
-
-# Run unit tests
 npm test
-
-# Run E2E tests (requires dev server running)
 npm run test:e2e
-
-# Build for staging
-npm run build:stage
-
-# Build for production
 npm run build:prod
 ```
 
@@ -677,15 +722,22 @@ npm run build:prod
 
 ## Quality Rules
 
-- **Never use CRA (Create React App)** — deprecated. Always Vite or Next.js.
-- **Always TypeScript strict mode** unless user explicitly says JS.
-- **ESLint flat config** for all new projects (Node 18+).
-- **Tailwind v4**: uses CSS-based config. Tailwind v3: uses `tailwind.config.ts`. Ask if unclear.
-- **antd v5**: no need for `import 'antd/dist/reset.css'`. Uses CSS-in-JS via `StyleProvider`.
-- When **Tailwind + antd**: add `corePlugins: { preflight: false }` to prevent CSS conflicts.
-- **TanStack Table v8 is headless** — pair with antd or Tailwind table styles.
-- **Never put business logic in page components** — use `features/` or `hooks/`.
-- **`.env.local` is never committed** — always in `.gitignore`.
-- **Pre-push hook** must run `type-check` AND `test` — not just lint.
-- **Axios client** must have interceptors for auth token and 401 handling from the start.
-- **All API calls** go through `src/services/` — never call `apiClient` directly from components.
+- **Never CRA** — always Vite or Next.js
+- **Always TypeScript strict** unless user says JS
+- **Next.js 15+**: config → `next.config.ts` (TypeScript) ✅
+- **Next.js 14 and below**: config → `next.config.mjs` (ESM JS, JSDoc only) ✅
+- **ALWAYS** confirm Next.js version from `package.json` or user input before writing config
+- **NEVER** emit `next.config.ts` unless version is confirmed ≥ 15 — it crashes on 14
+- **NEVER** emit `next.config.js` (CJS) for new projects
+- **Tailwind v4**: CSS-only config via `@import "tailwindcss"` — NO `tailwind.config.ts`
+- **Tailwind v3**: `tailwind.config.ts` required + `postcss.config.js`
+- **ESLint v9**: `eslint.config.mjs` flat config
+- **ESLint v8**: `.eslintrc.cjs` (legacy only)
+- **Husky v9**: `npx husky init` (not `npx husky install`)
+- **TanStack Query v5**: `gcTime` not `cacheTime`, `initialPageParam` required in infinite queries
+- **Zustand v5**: no breaking changes from v4 API — same patterns apply
+- **antd v5 + Tailwind**: always add `corePlugins: { preflight: false }` in Tailwind v3, or handle via CSS specificity in v4
+- **`.env.local` never committed** — always in `.gitignore`
+- **Pre-push** must run `type-check` AND `test`
+- **Axios client** must have auth + 401 interceptors from the start
+- **All API calls** go through `src/services/` only
