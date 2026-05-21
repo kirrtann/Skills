@@ -394,6 +394,13 @@ Always strict. Use `moduleResolution: "bundler"` for Next.js 14+/Vite 4+:
 
 ### 3G — package.json
 
+> ⚠️ **CRITICAL — Framework-Specific Dependencies:**
+>
+> - **Next.js:** Do NOT include `@tailwindcss/vite` — it breaks Next.js builds. Include only `tailwindcss@next`.
+> - **Vite:** Include both `tailwindcss@next` AND `@tailwindcss/vite` for CSS-first config.
+> - **@types/node:** Must be `^20.19.x` or higher for Next.js 15 with Tailwind v4 (peer dependency fix).
+> - **@types/react:** Match React version — `^19.x` for React 19, `^18.x` for React 18.
+
 Include ALL chosen deps with correct versions. Always pin major versions in descriptions.
 
 #### Scripts
@@ -429,10 +436,13 @@ For Next.js 14: remove `--turbopack` from dev script.
 
 | Package | Latest stable | Notes |
 |---|---|---|
-| next | 15.x | Use 14.x if user chose v14 |
-| react / react-dom | 19.x (Next.js 15) / 18.x (Next.js 14) | Must match |
-| typescript | ^5.5.x | |
+| **next** | **15.x** | Use 14.x if user chose v14 |
+| **react / react-dom** | **19.x (Next.js 15) / 18.x (Next.js 14)** | Must match |
+| **typescript** | **^5.5.x** | |
+| **@types/node** | **^20.19.x** | ⚠️ Must be ≥20.19.0 for Tailwind v4 compatibility |
+| **@types/react** | **^19.x** | Match React major version |
 | tailwindcss | ^4.x or ^3.x | Match chosen version |
+| @tailwindcss/vite | ^4.x | ⚠️ **Vite ONLY** — DO NOT include for Next.js |
 | @tanstack/react-query | ^5.x | v5 has breaking changes from v4 |
 | @tanstack/react-table | ^8.x | |
 | zustand | ^5.x | v5 released 2024 |
@@ -828,6 +838,34 @@ npm run build:prod
 
 ## Quality Rules
 
+> 🚨 **MANDATORY CRITICAL CHECKS — FAILURE = BROKEN PROJECT:**
+
+1. **Next.js version in package.json = Next.js config file type:**
+   - ✅ Next.js 15+: `next.config.ts` (TypeScript)
+   - ✅ Next.js 14 and below: `next.config.mjs` (ESM JS + JSDoc)
+   - ❌ NEVER `next.config.js` (CJS) for new projects
+   - ❌ NEVER `next.config.ts` on Next.js 14 — instant crash
+
+2. **Tailwind v4 + @types/node compatibility:**
+   - ✅ Use `@types/node@^20.19.x` or higher for Tailwind v4
+   - ✅ Tailwind v4: NO `tailwind.config.ts` — CSS-only via `@import "tailwindcss"`
+   - ❌ NEVER `@tailwindcss/vite` for Next.js projects (Vite only)
+   - ❌ NEVER old @types/node versions (causes peer dependency conflicts)
+
+3. **Framework-specific dependencies:**
+   - ✅ **Next.js 15:** `tailwindcss@next` only (no Vite plugin)
+   - ✅ **Vite:** `tailwindcss@next` + `@tailwindcss/vite`
+   - ✅ **@types/react:** Match React version (^19.x for React 19, ^18.x for React 18)
+
+4. **TypeScript config must include:**
+   - `"moduleResolution": "bundler"` for Next.js 14+
+   - `"strict": true` — always
+   - Correct include paths for your framework
+
+---
+
+## Legacy Rules (kept for reference)
+
 - **Never CRA** — always Vite or Next.js
 - **Always TypeScript strict** unless user says JS
 - **Next.js 15+**: config → `next.config.ts` (TypeScript) ✅
@@ -847,3 +885,4 @@ npm run build:prod
 - **Pre-push** must run `type-check` AND `test`
 - **Axios client** must have auth + 401 interceptors from the start
 - **All API calls** go through `src/services/` only
+
